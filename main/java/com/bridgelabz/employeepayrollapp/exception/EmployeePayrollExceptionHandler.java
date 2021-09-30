@@ -15,12 +15,10 @@ import com.bridgelabz.employeepayrollapp.model.ResponseDTO;
 @ControllerAdvice
 public class EmployeePayrollExceptionHandler
 {
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public ResponseEntity<ResponseDTO> HandleMethodArgumentNotValidException(MethodArgumentNotValidException exception)
+	@ExceptionHandler(EmployeePayrollException.class)
+	public ResponseEntity<ResponseDTO> HandleMethodArgumentNotValidException(EmployeePayrollException exception)
 	{
-		List<ObjectError> errorList=exception.getBindingResult().getAllErrors();
-		List<String> errMsg=errorList.stream().map(objErr->objErr.getDefaultMessage()).collect(Collectors.toList());
-		ResponseDTO responseDTO=new ResponseDTO("Exception while processing REST request",errMsg);
+		ResponseDTO responseDTO=new ResponseDTO("Exception while processing REST request",exception.getMessage());
 		return new ResponseEntity<ResponseDTO>(responseDTO,HttpStatus.BAD_REQUEST);
 		
 	}
