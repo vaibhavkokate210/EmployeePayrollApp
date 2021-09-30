@@ -1,8 +1,13 @@
 package com.bridgelabz.employeepayrollapp.dto;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
+
 public class EmployeePayrollDto 
 {
+	@NotEmpty(message="Employee name can not be null")
 	public String name;
+	@Min(value=500,message="Min wage should be more than 500")
 	public long salary;
 	public EmployeePayrollDto(String name, long salary) {
 		super();
