@@ -31,30 +31,31 @@ public class EmployeePayrollService implements IEmployeePayrollService
 	@Override
 	public EmployeePayrollData getEmployeePayrollData(int empId) 
 	{
-		return empList.stream().filter(empData->empData.getEmpId()==empId).findFirst().orElseThrow(()->new EmployeePayrollException("Employee not found"));
+		return employeeRepository
+				.findById(empId)
+				.orElseThrow(()->new EmployeePayrollException("Employee with employeeId "+
+				  empId+" does not exists..."));
 	}
 
 	@Override
 	public EmployeePayrollData addEmployeePayrollData(EmployeePayrollDto emp) {
-		EmployeePayrollData data;
-		data=new EmployeePayrollData(empList.size()+1,emp);
+		EmployeePayrollData data=null;
+		data=new EmployeePayrollData(emp);
 		log.debug("Emp Data :"+data.toString());
-		empList.add(data);
 		return employeeRepository.save(data);
 	}
 
 	@Override
 	public void deleteEmployeePayroll(int empId) {
-		empList.remove(empId-1);
+		EmployeePayrollData empData=this.getEmployeePayrollData(empId);
+		employeeRepository.delete(empData);
 	}
 
 	@Override
 	public EmployeePayrollData updateEmployeePayrollData(int empId, EmployeePayrollDto emp) {
 		EmployeePayrollData data=this.getEmployeePayrollData(empId);
-		data.setName(emp.getName());
-		data.setSalary(emp.getSalary());
-		empList.set(empId-1, data);
-		return data;
+		data.updateEmployeePayrollData(emp);
+		return employeeRepository.save(data);
 	}
 
 }
